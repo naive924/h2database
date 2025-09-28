@@ -1197,7 +1197,9 @@ public class MVMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V
             }
             target.setComplete();
         }
-        store.registerUnsavedMemoryAndCommitIfNeeded(target.getMemory());
+        // In parallel map copy this call triggers an early commit on the global MVStore and exposes transient states, causing AssertionError in clearPageReference().
+        // see https://github.com/h2database/h2database/issues/4286
+        //store.registerUnsavedMemoryAndCommitIfNeeded(target.getMemory());
     }
 
     /**
